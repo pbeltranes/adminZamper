@@ -1,0 +1,9 @@
+{
+    "clientId":"String",
+    "nameDevice":"String",
+    "locateDevice":"String",
+    "state":"String",
+    "lastSendData":"Datetime",
+    "id":"String",
+    "battery":"String"
+}

@@ -1,0 +1,9 @@
+{
+    "name":"String",
+    "password":"String",
+    "mail":"String",
+    "isActive":"Boolean",
+    "cellphone":"String",
+    "apiKey":"String",
+    "tokenKey":"String"
+}

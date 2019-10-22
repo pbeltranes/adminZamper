@@ -10,8 +10,9 @@ import {
   LibraryBooks as LibraryIcon,
   HelpOutline as FAQIcon,
   ArrowBack as ArrowBackIcon,
-  Cloud as Cloud,
-  SupervisedUserCircle as SupervisedUserCircle,
+  Cloud,
+  SupervisedUserCircle,
+  Timeline,
 } from "@material-ui/icons";
 import { useTheme } from "@material-ui/styles";
 import { withRouter } from "react-router-dom";
@@ -32,24 +33,28 @@ import {
 } from "../../context/LayoutContext";
 
 const structure = [
-  { id: 0, label: "Dashboard", link: "/dashboard", icon: <HomeIcon /> },
-  { id: 1, label: "Clients", link: "/clients", icon: <SupervisedUserCircle /> },
-  { id: 2, label: "Devices", link: "/devices", icon: <Cloud /> },
-  { id: 3, label: "Devices", link: "/devices", icon: <Cloud/> },
-  { id: 4, label: "UI Elements", link: "/ui", icon: <SupervisedUserCircle />,
+  { id: 0, type: "title", label: "MANAGEMENT" },
+  { id: 1, label: "Dashboard", link: "/dashboard", icon: <HomeIcon /> },
+  {
+    id: 2,
+    label: "Clients",
+    link: "/clients",
+    icon: <SupervisedUserCircle />,
     children: [
-      { label: "Icons", link: "/ui/icons" },
-      { label: "Charts", link: "/ui/charts" },
-      { label: "Maps", link: "/ui/maps" },
+      { label: "Lista de Usurios", link: "/clients" },
+      { label: "Crear Usuario", link: "/clients" },
     ],
   },
+  { id: 3, label: "Devices", link: "/devices", icon: <Cloud /> },
+  { id: 4, label: "Brokers", link: "/broker", icon: <Timeline /> },
   { id: 5, type: "divider" },
   { id: 6, type: "title", label: "HELP" },
   { id: 7, label: "Library", link: "", icon: <LibraryIcon /> },
   { id: 8, label: "Support", link: "", icon: <SupportIcon /> },
   { id: 9, label: "FAQ", link: "", icon: <FAQIcon /> },
+
   { id: 10, type: "divider" },
-  { id: 11, type: "title", label: "PROJECTS" },
+  { id: 11, type: "title", label: "OTHERS" },
   {
     id: 12,
     label: "My recent",
@@ -67,6 +72,17 @@ const structure = [
     label: "Background",
     link: "",
     icon: <Dot size="large" color="secondary" />,
+  },
+  {
+    id: 15,
+    label: "UI Elements",
+    link: "/ui",
+    icon: <SupervisedUserCircle />,
+    children: [
+      { label: "Icons", link: "/ui/icons" },
+      { label: "Charts", link: "/ui/charts" },
+      { label: "Maps", link: "/ui/maps" },
+    ],
   },
 ];
 

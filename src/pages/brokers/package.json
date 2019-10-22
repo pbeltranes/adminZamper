@@ -1,0 +1,6 @@
+{
+  "name": "Broker",
+  "version": "0.0.0",
+  "main": "Broker.js",
+  "private": true
+}

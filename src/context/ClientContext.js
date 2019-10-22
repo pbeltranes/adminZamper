@@ -24,6 +24,18 @@ function userReducer(state = initialState, action) {
         error: null,
         clients: action.clients,
       };
+    case "CREATE_CLIENT_SUCCESS":
+      return {
+        ...state,
+        error: null,
+        client: action.clients,
+      };
+    case "CREATE_CLIENT_FAILURE":
+      return {
+        ...state,
+        error: null,
+        clients: action.clients,
+      };
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -68,7 +80,8 @@ export {
   useClientState,
   useClientDispatch,
   getClients,
-  setClient,
+  createClient,
+
 };
 
 // ###########################################################
@@ -78,10 +91,10 @@ async function getClients(dispatch, history, setIsLoading, setError) {
   setIsLoading(true);
   //const response = await axios.post('matrix_local/create_local', {login, password})
   const response = await axios.get(
-    "https://jsonplaceholder.typicode.com/users",
+    "https://jsonplaceholder.typicode.com/users"
   );
-  console.log(response)
-  const clients = response.data
+  console.log(response);
+  const clients = response.data;
   try {
     setTimeout(() => {
       dispatch({ type: "GET_CLIENTS_SUCCESS", clients: clients });
@@ -93,6 +106,17 @@ async function getClients(dispatch, history, setIsLoading, setError) {
     setError(true);
     setIsLoading(false);
   }
+}
+
+async function createClient(dispatch,client,history,setIsLoading, setError){
+setError(false);
+setIsLoading(true);
+//const response = await axios.post()
+setTimeout(() => {
+  dispatch({ type: "CREATE_CLIENT_SUCCESS", client: client });
+  setError(false);
+  setIsLoading(false);
+}, process.env.defaultTTL || 2000);
 }
 async function setClient(
   dispatch,

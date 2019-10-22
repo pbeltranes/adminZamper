@@ -1,0 +1,6 @@
+{
+  "name": "ClientRegister",
+  "version": "0.0.0",
+  "private": true,
+  "main": "ClientRegister.js"
+}

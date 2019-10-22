@@ -21,6 +21,7 @@ import Notifications from "../../pages/notifications";
 import Maps from "../../pages/maps";
 import Devices from "../../pages/devices/Devices";
 import Clients from "../../pages/clients/Clients"
+import Broker from "../../pages/brokers/Broker";
 import Icons from "../../pages/icons";
 import Charts from "../../pages/charts";
 
@@ -46,6 +47,7 @@ function Layout(props) {
             <div className={classes.fakeToolbar} />
             <Switch>
             <Route exact path="/" render={() => <Redirect to="/dashboard" />} />
+            <Route path="/broker" component={Broker}/>
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/typography" component={Typography} />
             <Route path="/clients" component={Clients} />

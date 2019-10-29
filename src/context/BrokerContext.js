@@ -1,40 +1,39 @@
 import React from "react";
 import axios from "axios";
-import { clients as clientsDefault } from "../databases/clients";
 
-var ClientStateContext = React.createContext();
-var ClientDispatchContext = React.createContext();
+var BrokerStateContext = React.createContext();
+var BrokerDispatchContext = React.createContext();
 
 const initialState = {
-  clients: null,
+  brokers: null,
   error: null,
 };
 
 function userReducer(state = initialState, action) {
   switch (action.type) {
-    case "GET_CLIENTS_SUCCESS":
+    case "GET_BROKERS_SUCCESS":
       return {
         ...state,
         error: null,
-        clients: action.clients,
+        brokers: action.brokers,
       };
-    case "GET_CLIENTS_FAILURE":
+    case "GET_BROKERS_FAILURE":
       return {
         ...state,
         error: null,
-        clients: action.clients,
+        brokers: action.brokers,
       };
-    case "CREATE_CLIENT_SUCCESS":
+    case "CREATE_BROKER_SUCCESS":
       return {
         ...state,
         error: null,
-        client: action.clients,
+        broker: action.broker,
       };
-    case "CREATE_CLIENT_FAILURE":
+    case "CREATE_BROKER_FAILURE":
       return {
         ...state,
         error: null,
-        clients: action.clients,
+        brokers: action.brokers,
       };
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
@@ -42,24 +41,24 @@ function userReducer(state = initialState, action) {
   }
 }
 
-function ClientProvider({ children }) {
+function BrokerProvider({ children }) {
   // Metodo que proveera el state, el disparados y los argumentos de accion, setea las forma de actuar el disparador
   var [state, dispatch] = React.useReducer(userReducer, {
-    clients: children.clients,
+    brokers: children.brokers,
   });
 
   return (
-    <ClientStateContext.Provider value={state}>
-      <ClientDispatchContext.Provider value={dispatch}>
+    <BrokerStateContext.Provider value={state}>
+      <BrokerDispatchContext.Provider value={dispatch}>
         {children}
-      </ClientDispatchContext.Provider>
-    </ClientStateContext.Provider>
+      </BrokerDispatchContext.Provider>
+    </BrokerStateContext.Provider>
   );
 }
 
-function useClientState() {
+function useBrokerState() {
   // Usado para obtener el contexto actual de este sistema
-  var context = React.useContext(ClientStateContext);
+  var context = React.useContext(BrokerStateContext);
   console.log("contexto actual", context);
   if (context === undefined) {
     throw new Error("useUserState must be used within a UserProvider");
@@ -67,25 +66,25 @@ function useClientState() {
   return context;
 }
 
-function useClientDispatch() {
+function useBrokerDispatch() {
   // Contiene el contexto actual que luego es usado para ser actualizado
-  var context = React.useContext(ClientDispatchContext);
+  var context = React.useContext(BrokerDispatchContext);
   if (context === undefined) {
     throw new Error("useUserDispatch must be used within a UserProvider");
   }
   return context;
 }
 export {
-  ClientProvider,
-  useClientState,
-  useClientDispatch,
-  getClients,
-  createClient,
+  BrokerProvider,
+  useBrokerState,
+  useBrokerDispatch,
+  getBrokers,
+  createBroker,
 };
 
 // ###########################################################
 
-async function getClients(dispatch, history, setIsLoading, setError) {
+async function getBrokers(dispatch, history, setIsLoading, setError) {
   setError(false);
   setIsLoading(true);
   //const response = await axios.post('matrix_local/create_local', {login, password})
@@ -93,35 +92,27 @@ async function getClients(dispatch, history, setIsLoading, setError) {
     "https://jsonplaceholder.typicode.com/users",
   );
   console.log(response);
-  const clients = response.data;
+  const brokers = response.data;
   try {
     setTimeout(() => {
-      dispatch({ type: "GET_CLIENTS_SUCCESS", clients: clients });
+      dispatch({ type: "GET_BROKERS_SUCCESS", brokers: brokers });
       setError(false);
       setIsLoading(false);
     }, process.env.defaultTTL || 2000);
   } catch (e) {
-    dispatch({ type: "GET_CLIENTS_FAILURE" });
+    dispatch({ type: "GET_BROKERS_FAILURE" });
     setError(true);
     setIsLoading(false);
   }
 }
 
-async function createClient(dispatch, client, history, setIsLoading, setError) {
+async function createBroker(dispatch, broker, history, setIsLoading, setError) {
   setError(false);
   setIsLoading(true);
   //const response = await axios.post()
   setTimeout(() => {
-    dispatch({ type: "CREATE_CLIENT_SUCCESS", client: client });
+    dispatch({ type: "CREATE_BROKER_SUCCESS", broker: broker });
     setError(false);
     setIsLoading(false);
   }, process.env.defaultTTL || 2000);
 }
-async function setClient(
-  dispatch,
-  login,
-  password,
-  history,
-  setIsLoading,
-  setError,
-) {}

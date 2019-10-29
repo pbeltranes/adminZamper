@@ -9,16 +9,22 @@ import * as serviceWorker from "./serviceWorker";
 import { LayoutProvider } from "./context/LayoutContext";
 import { UserProvider } from "./context/UserContext";
 import { ClientProvider } from "./context/ClientContext";
+import { DeviceProvider } from "./context/DeviceContext";
+import { BrokerProvider } from "./context/BrokerContext";
 
 ReactDOM.render(
   <LayoutProvider>
     <UserProvider>
       <ClientProvider>
-      <ThemeProvider theme={Themes.default}>
-        <CssBaseline />
-        <App />
-      </ThemeProvider>
-      </ClientProvider> 
+        <DeviceProvider>
+        <BrokerProvider>
+          <ThemeProvider theme={Themes.default}>
+            <CssBaseline />
+            <App />
+          </ThemeProvider>
+          </BrokerProvider>
+        </DeviceProvider>
+      </ClientProvider>
     </UserProvider>
   </LayoutProvider>,
   document.getElementById("root"),

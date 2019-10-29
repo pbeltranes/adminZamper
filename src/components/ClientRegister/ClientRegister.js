@@ -22,11 +22,7 @@ import Typography from "@material-ui/core/Typography";
 // styles
 import useStyles from "./styles";
 
-import {
-  createClient,
-  useClientDispatch,
-  useClientState,
-} from "../../context/ClientContext";
+import { createClient, useClientDispatch } from "../../context/ClientContext";
 
 function SimpleDialog(props) {
   var clientDispatch = useClientDispatch();
@@ -40,12 +36,6 @@ function SimpleDialog(props) {
   };
 
   const [form, setValues] = useState({
-    firstName: props.firstName,
-    lastName: props.lastName,
-    email: props.email,
-    apiKey: props.apiKey,
-    secretKey: props.secretKey,
-    phone: props.phone,
     errors: {
       firstName: "",
       lastName: "",
@@ -61,7 +51,9 @@ function SimpleDialog(props) {
   );
   const validateForm = form => {
     let valid = true;
-    Object.values(form.errors).forEach(val => val.length > 0 && (valid = false));
+    Object.values(form.errors).forEach(
+      val => val.length > 0 && (valid = false),
+    );
 
     console.log(valid);
     return valid;
@@ -97,12 +89,13 @@ function SimpleDialog(props) {
 
   const handleBlur = _ => {};
 
-  const printValues = e => {
+  const printValues = async e => {
     e.preventDefault();
     if (validateForm(form)) {
       console.log(e, form);
-      createClient(clientDispatch,form, '/client',setIsLoading,setError)
-      console.log("it's works!")
+      await createClient(clientDispatch, form, "/client", setIsLoading, setError);
+      
+      handleClose();
     } else {
       console.error("Invalid Form");
     }
@@ -245,6 +238,7 @@ export default function ClientRegister() {
         <AddIcon />
       </Fab>
       <SimpleDialog
+        
         selectedValue={selectedValue}
         open={open}
         onClose={handleClose}

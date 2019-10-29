@@ -22,18 +22,20 @@ import useStyles from "./style";
 export default function Clients(props) {
   // global
   var clientDispatch = useClientDispatch();
-  const { clients } = useClientState();
+  var { clients } = useClientState();
 
   // local
 
   var classes = useStyles();
   var [isLoading, setIsLoading] = useState(false);
   var [error, setError] = useState(null);
+  var [newClient, setClient]= useState(false);
 
   useEffect(() => {
-    if (clients === undefined) {
+    if (clients === undefined || newClient === true) {
       console.log("entra aqui");
       getClients(clientDispatch, props.history, setIsLoading, setError);
+      setClient(false);
     }
   });
 
@@ -45,7 +47,7 @@ export default function Clients(props) {
         justify="space-between"
         alignItems="center"
       >
-        <PageTitle title="Clientes" />
+        <PageTitle title="Clientes"  />
 
         <ClientRegister />
       </Grid>

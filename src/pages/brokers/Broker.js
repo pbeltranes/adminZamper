@@ -7,37 +7,37 @@ import MUIDataTable from "mui-datatables";
 // components
 import PageTitle from "../../components/PageTitle";
 import {
-  getClients,
-  useClientDispatch,
-  useClientState,
-} from "../../context/ClientContext";
+  getBrokers,
+  useBrokerDispatch,
+  useBrokerState,
+} from "../../context/BrokerContext";
 
 // data
 
-export default function Clients(props) {
+export default function Broker(props) {
   // global
-  var clientDispatch = useClientDispatch();
-  const { clients } = useClientState();
+  var dispatch = useBrokerDispatch();
+  const { brokers } = useBrokerState();
 
   // local
   var [isLoading, setIsLoading] = useState(false);
   var [error, setError] = useState(null);
   useEffect(() => {
-    if (clients === undefined) {
+    if (brokers === undefined) {
       console.log("entra aqui");
-      getClients(clientDispatch, props.history, setIsLoading, setError);
+      getBrokers(dispatch, props.history, setIsLoading, setError);
     }
   });
 
   return (
     <>
-      <PageTitle title="Clientes" />
+      <PageTitle title="Broker" />
      
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <MUIDataTable
-            title="Lista de Clientes"
-            data={clients}
+            title="Lista de Brokers"
+            data={brokers}
             columns={[
               "name",
               "email",

@@ -92,11 +92,10 @@ export default function Clients(props) {
   const columns = [
     { title: "id", field: "id" },
     { title: "Estado", field: "estado" },
-    { title: "En Ejecucción", field: "run_task" },
-    { title: "Estado Tarea", field: "estado_task" },
-    { title: "Device Asignado", field: "id_brok" },
-    { title: "Contador de Tareas", field: "contador_task" },
-    { title: "Llave MQTT", field: "key_broker_mqtt" },
+    { title: "En Ejecucción", field: "run_task", lookup: {'true':'Activo', 'false':'Inactivo' } },
+    { title: "Estado Tarea", field: "estado_task", lookup: {'true':'Activo', 'false':'Inactivo' } },
+    { title: "Device Asignado", field: "id_brok", lookup: {'null':'Sin asignar' } },
+    { title: "Contador de Tareas", field: "contador_task" }
   ];
 
   return (

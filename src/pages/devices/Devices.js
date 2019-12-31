@@ -114,6 +114,7 @@ export default function Clients(props) {
     { title: "id", field: "id" },
     { title: "Nombre Dispositivo", field: "device_name" },
     { title: "Cliente", field: "id_comp", lookup: rObj[0] },
+    { title: "Cliente", field: "id_brok" },
     { title: "Autor", field: "device_autor" },
     { title: "Tipo Dispositivo", field: "device_type" },
     { title: "Version Hardware", field: "device_model" },

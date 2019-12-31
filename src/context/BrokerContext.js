@@ -12,9 +12,10 @@ const initialState = {
 function userReducer(state = initialState, action) {
   switch (action.type) {
     case "GET_BROKERS_SUCCESS":
+      console.log(action.payload)
       return {
         ...state,
-        brokers: action.brokers,
+        brokers: action.payload ,
       };
     case "GET_BROKERS_FAILURE":
       return {
@@ -114,7 +115,9 @@ async function getBrokers(dispatch, history, setIsLoading, setError) {
   setIsLoading(true);
   await Axios.get("/api/brokers")
     .then( brokers => {
-      dispatch({ type: "GET_BROKERS_SUCCESS",  brokers: {brokers}  });
+      console.log(brokers)
+      debugger
+      dispatch({ type: "GET_BROKERS_SUCCESS",  payload: brokers.data   });
       setError(false);
       setIsLoading(false);
       return 'success'

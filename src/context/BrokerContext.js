@@ -1,12 +1,12 @@
 import React from "react";
-import axios from "axios";
+import Axios from "../axios";
 
 var BrokerStateContext = React.createContext();
 var BrokerDispatchContext = React.createContext();
 
 const initialState = {
-  brokers: null,
-  error: null,
+  brokers: [],
+  error: [],
 };
 
 function userReducer(state = initialState, action) {
@@ -14,26 +14,48 @@ function userReducer(state = initialState, action) {
     case "GET_BROKERS_SUCCESS":
       return {
         ...state,
-        error: null,
         brokers: action.brokers,
       };
     case "GET_BROKERS_FAILURE":
       return {
         ...state,
-        error: null,
-        brokers: action.brokers,
+        error: action.error,
       };
     case "CREATE_BROKER_SUCCESS":
       return {
-        ...state,
-        error: null,
-        broker: action.broker,
+        brokers: [...state.brokers, action.newBroker],
       };
     case "CREATE_BROKER_FAILURE":
       return {
         ...state,
-        error: null,
         brokers: action.brokers,
+      };
+    case "UPDATE_BROKER_SUCCESS":
+      return {
+        brokers: state.brokers.map(broker => {
+          if (broker.id !== action.updateBroker.id) {
+            return broker;
+          }
+          return {
+            ...action.updatebroker,
+          };
+        }),
+      };
+    case "UPDATE_BROKER_FAILURE":
+    return {
+      brokers: [...state.brokers],
+      error: action.error,
+    }
+    case "DELETE_BROKER_FAILURE":
+      return {
+        brokers: [...state.brokers],
+        error: action.error,
+      };
+    case "DELETE_BROKER_SUCCESS":
+      return {
+        brokers: state.brokers.filter(
+          broker => broker.id !== action.deleteBroker.id,
+        ),
       };
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
@@ -45,6 +67,7 @@ function BrokerProvider({ children }) {
   // Metodo que proveera el state, el disparados y los argumentos de accion, setea las forma de actuar el disparador
   var [state, dispatch] = React.useReducer(userReducer, {
     brokers: children.brokers,
+    error: children.error,
   });
 
   return (
@@ -80,6 +103,8 @@ export {
   useBrokerDispatch,
   getBrokers,
   createBroker,
+  updateBroker,
+  deleteBroker
 };
 
 // ###########################################################
@@ -87,32 +112,85 @@ export {
 async function getBrokers(dispatch, history, setIsLoading, setError) {
   setError(false);
   setIsLoading(true);
-  //const response = await axios.post('matrix_local/create_local', {login, password})
-  const response = await axios.get(
-    "https://jsonplaceholder.typicode.com/users",
-  );
-  console.log(response);
-  const brokers = response.data;
-  try {
-    setTimeout(() => {
-      dispatch({ type: "GET_BROKERS_SUCCESS", brokers: brokers });
+  await Axios.get("/api/brokers")
+    .then( brokers => {
+      dispatch({ type: "GET_BROKERS_SUCCESS",  brokers: {brokers}  });
       setError(false);
       setIsLoading(false);
-    }, process.env.defaultTTL || 2000);
-  } catch (e) {
-    dispatch({ type: "GET_BROKERS_FAILURE" });
-    setError(true);
-    setIsLoading(false);
-  }
+      return 'success'
+    })
+    .catch(e => {
+      dispatch({ type: "GET_BROKERS_FAILURE", error:e });
+      setError(true);
+      setIsLoading(false);
+      return e
+    });
 }
 
-async function createBroker(dispatch, broker, history, setIsLoading, setError) {
+async function createBroker(dispatch, form, history, setIsLoading, setError) {
   setError(false);
   setIsLoading(true);
-  //const response = await axios.post()
-  setTimeout(() => {
-    dispatch({ type: "CREATE_BROKER_SUCCESS", broker: broker });
-    setError(false);
-    setIsLoading(false);
-  }, process.env.defaultTTL || 2000);
+  console.log("el form", form);
+  await Axios.post("/api/broker", {
+    name_usuario: form.name_usuario,
+    id_comp: form.id_comp,
+    invoice_email: form.invoice_phone,
+    invoice_phone: form.invoice_email,
+    keys_json: form.tokenKey,
+    estado_api: true,
+  })
+    .then(broker => {
+      dispatch({ type: "CREATE_BROKER_SUCCESS", newBroker: broker.data });
+      setError(false);
+      setIsLoading(false);
+      return "success";
+    })
+    .catch(error => {
+      dispatch({ type: "CREATE_BROKER_FAILURE", error: error });
+      setError(true);
+      setIsLoading(false);
+      return error;
+    });
+}
+async function updateBroker(dispatch, form, history, setIsLoading, setError) {
+  setError(false);
+  setIsLoading(true);
+  console.log("el form", form);
+  await Axios.put("/api/broker/" + form.id, {
+    name_usuario: form.name_usuario,
+    id_comp: form.id_comp,
+    invoice_email: form.invoice_phone,
+    invoice_phone: form.invoice_email,
+    keys_json: form.tokenKey,
+    estado_api: true,
+  })
+    .then(broker => {
+      dispatch({ type: "UPDATE_BROKER_SUCCESS", updateBroker: broker.data });
+      setError(false);
+      setIsLoading(false);
+      return "success";
+    })
+    .catch(error => {
+      dispatch({ type: "UPDATE_BROKER_FAILURE", error: error });
+      setError(true);
+      setIsLoading(false);
+      return error;
+    });
+}
+async function deleteBroker(dispatch, form, history, setIsLoading, setError) {
+  setError(false);
+  setIsLoading(true);
+  await Axios.delete("/api/broker/" + form.id)
+    .then(broker => {
+      dispatch({ type: "DELETE_BROKER_SUCCESS", deleteBroker: broker.data });
+      setError(false);
+      setIsLoading(false);
+      return "success";
+    })
+    .catch(error => {
+      dispatch({ type: "DELETE_BROKER_FAILURE", error: error });
+      setError(true);
+      setIsLoading(false);
+      return error;
+    });
 }

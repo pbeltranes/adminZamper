@@ -7,7 +7,6 @@ import {
   Paper,
 } from "@material-ui/core";
 import * as Icons from "@material-ui/icons";
-
 // styles
 import useStyles from "./styles";
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, forwardRef } from "react";
 import { Grid, CircularProgress, Modal } from "@material-ui/core";
+import MUIDataTable from "mui-datatables";
 
 import { Add as AddIcon } from "@material-ui/icons";
 import AddBox from "@material-ui/icons/AddBox";
@@ -21,21 +22,17 @@ import ViewColumn from "@material-ui/icons/ViewColumn";
 import MaterialTable from "material-table";
 // components
 import PageTitle from "../../components/PageTitle";
+import OrganizationRegister from "../../components/OrganizationRegister/OrganizationRegister";
 // Context
 import {
+  createOrganization,
   getOrganizations,
+  deleteOrganization,
+  updateOrganization,
   useOrganizationDispatch,
   useOrganizationState,
 } from "../../context/OrganizationContext";
 
-import {
-  createDevice,
-  getDevices,
-  deleteDevice,
-  updateDevice,
-  useDeviceDispatch,
-  useDeviceState,
-} from "../../context/DeviceContext";
 // data
 
 // styles
@@ -65,60 +62,37 @@ const tableIcons = {
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
 };
 
+
 export default function Clients(props) {
   // global
-  var dispatchOrganization = useOrganizationDispatch();
-  var dispatchDevice = useDeviceDispatch();
+  var dispatch = useOrganizationDispatch();
   var { organizations } = useOrganizationState();
-  var { devices } = useDeviceState();
   // local
-  var rObj = {};
+
   var classes = useStyles();
   var [isLoading, setIsLoading] = useState(false);
   var [error, setError] = useState(null);
+  var [newOrganization, setOrganization] = useState(false);
 
-  async function fetchData() {
-    // You can await here
-    if (
-      typeof devices === "undefined" &&
-      typeof organizations === "undefined"
-    ) {
-      await getDevices(dispatchDevice, props.history, setIsLoading, setError);
-      await getOrganizations(
-        dispatchOrganization,
-        props.history,
-        setIsLoading,
-        setError,
-      );
-    }
-  }
-  if (typeof organizations !== "undefined") {
-    rObj = organizations.map(obj => {
-      rObj[obj.id] = obj.name;
-      return rObj;
-    });
-  }
   useEffect(() => {
+    async function fetchData() {
+      // You can await here
+      if (typeof organizations === "undefined") {
+        await getOrganizations(dispatch, props.history, setIsLoading, setError);
+      }
+    }
     fetchData();
-  }, [
-    "id",
-    "device_name",
-    "run_task",
-    "device_autor",
-    "device_type",
-    "device_chip_imei",
-    "device_chip_iddi",
-  ]); // [] define que si una variable cambia, debería ejecutarse el useEffect
-  console.log(rObj);
+  }, ['id', 'rut_empresa', 'name', 'nombre_representante', 'invoice_address', 'invoice_email','invoice_phone']); // [] define que si una variable cambia, debería ejecutarse el useEffect
+
+
   const columns = [
     { title: "id", field: "id" },
-    { title: "Nombre Dispositivo", field: "device_name" },
-    { title: "Cliente", field: "id_comp", lookup: rObj[0] },
-    { title: "Autor", field: "device_autor" },
-    { title: "Tipo Dispositivo", field: "device_type" },
-    { title: "Version Hardware", field: "device_model" },
-    { title: "IMEI", field: "device_chip_imei" },
-    { title: "Chip Iddi", field: "device_chip_iddi" },
+    { title: "Rut", field: "rut_empresa" },
+    { title: "Nombre", field: "name" },
+    { title: "Nombre Representante", field: "nombre_representante" },
+    { title: "Dirección", field: "invoice_address" },
+    { title: "Email Contacto", field: "invoice_email" },
+    { tittle: "Telefono de Contacto", field: "invoice_phone"}
   ];
 
   return (
@@ -129,7 +103,9 @@ export default function Clients(props) {
         justify="space-between"
         alignItems="center"
       >
-        <PageTitle title="Devices" />
+        <PageTitle title="Organizaciones" />
+
+        <OrganizationRegister />
       </Grid>
 
       <Grid container spacing={2}>
@@ -140,58 +116,47 @@ export default function Clients(props) {
             </Grid>
           ) : (
             <MaterialTable
-              title="Lista de Devices"
+              title="Lista de Organizaciones"
               icons={tableIcons}
-              data={devices}
+              data={organizations}
               columns={columns}
               editable={{
                 onRowAdd: async newData => {
-                  console.log("NEW TADA", newData);
-                  await createDevice(
-                    dispatchDevice,
+                  console.log("NEW TADA", newData)
+                  await createOrganization(dispatch, newData, "/organizations", setIsLoading, setError
+                  ).then(() => { console.log('funco') })
+                  .catch(error => {
+                    console.log(error);
+                  })
+                },
+                onRowUpdate: async (newData, oldData) =>
+                {
+                  console.log("new data?", newData)
+                  await updateOrganization(
+                    dispatch,
                     newData,
-                    "/Device",
+                    "/organizations",
                     setIsLoading,
                     setError,
-                  )
-                    .then(() => {
-                      console.log("funco");
-                    })
-                    .catch(error => {
-                      console.log(error);
-                    });
-                },
-                onRowUpdate: async (newData, oldData) => {
-                  console.log("new data?", newData);
-                  await updateDevice(
-                    dispatchDevice,
-                    newData,
-                    "/Device",
-                    setIsLoading,
-                    setError,
-                  )
-                    .then(() => {
-                      console.log("funco");
-                    })
-                    .catch(error => {
-                      console.log(error);
-                    });
-                },
-                onRowDelete: async oldData => {
-                  await deleteDevice(
-                    dispatchDevice,
-                    oldData,
-                    "/Device",
-                    setIsLoading,
-                    setError,
-                  )
-                    .then(() => {
-                      console.log("funco");
-                    })
-                    .catch(error => {
-                      console.log(error);
-                    });
-                },
+                  ).then(() => { console.log('funco') })
+                  .catch(error => {
+                    console.log(error);
+                  })
+                }
+                  ,
+                onRowDelete: async oldData =>
+                {
+                await deleteOrganization(
+                  dispatch,
+                  oldData,
+                  "/organizations",
+                  setIsLoading,
+                  setError,
+                ).then(() => { console.log('funco') })
+                .catch(error => {
+                  console.log(error);
+                })
+              }
               }}
             />
           )}

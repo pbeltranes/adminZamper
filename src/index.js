@@ -11,18 +11,21 @@ import { UserProvider } from "./context/UserContext";
 import { ClientProvider } from "./context/ClientContext";
 import { DeviceProvider } from "./context/DeviceContext";
 import { BrokerProvider } from "./context/BrokerContext";
+import { OrganizationProvider } from "./context/OrganizationContext";
 
 ReactDOM.render(
   <LayoutProvider>
     <UserProvider>
       <ClientProvider>
         <DeviceProvider>
-        <BrokerProvider>
-          <ThemeProvider theme={Themes.default}>
-            <CssBaseline />
-            <App />
-          </ThemeProvider>
-          </BrokerProvider>
+          <OrganizationProvider>
+            <BrokerProvider>
+              <ThemeProvider theme={Themes.default}>
+                <CssBaseline />
+                <App />
+              </ThemeProvider>
+            </BrokerProvider>
+          </OrganizationProvider>
         </DeviceProvider>
       </ClientProvider>
     </UserProvider>

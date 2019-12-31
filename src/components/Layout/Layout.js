@@ -20,7 +20,8 @@ import Typography from "../../pages/typography";
 import Notifications from "../../pages/notifications";
 import Maps from "../../pages/maps";
 import Devices from "../../pages/devices/Devices";
-import Clients from "../../pages/clients/Clients"
+import Clients from "../../pages/clients/Clients";
+import Organizations from "../../pages/organizations/Organizations";
 import Broker from "../../pages/brokers/Broker";
 import Icons from "../../pages/icons";
 import Charts from "../../pages/charts";
@@ -51,6 +52,7 @@ function Layout(props) {
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/typography" component={Typography} />
             <Route path="/clients" component={Clients} />
+            <Route path="/organizations" component={Organizations} />
             <Route path="/devices" component={Devices} />
             <Route path="/notifications" component={Notifications} />
             <Route exact path="/ui" render={() => <Redirect to="/ui/icons" />} />

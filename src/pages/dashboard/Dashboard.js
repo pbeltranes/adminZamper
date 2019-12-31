@@ -35,10 +35,10 @@ import BigStat from "./components/BigStat/BigStat";
 
 const mainChartData = getMainChartData();
 const PieChartData = [
-  { name: "Group A", value: 400, color: "primary" },
-  { name: "Group B", value: 300, color: "secondary" },
-  { name: "Group C", value: 300, color: "warning" },
-  { name: "Group D", value: 200, color: "success" },
+  { name: "Agricola A", value: 400, color: "primary" },
+  { name: "Agricola B", value: 300, color: "secondary" },
+  { name: "Vinicola A", value: 300, color: "warning" },
+  { name: "Agricola D", value: 200, color: "success" },
 ];
 
 export default function Dashboard(props) {
@@ -55,7 +55,7 @@ export default function Dashboard(props) {
       <Grid container spacing={4}>
         <Grid item lg={3} md={4} sm={6} xs={12}>
           <Widget
-            title="Visits Today"
+            title="Solicitudes de Request"
             upperTitle
             bodyClass={classes.fullHeightBody}
             className={classes.card}
@@ -93,19 +93,19 @@ export default function Dashboard(props) {
             >
               <Grid item>
                 <Typography color="text" colorBrightness="secondary">
-                  Registrations
+                  Request por usuario
                 </Typography>
-                <Typography size="md">860</Typography>
+                <Typography size="md">396.1</Typography>
               </Grid>
               <Grid item>
                 <Typography color="text" colorBrightness="secondary">
-                  Sign Out
+                  Usuarios accediendo
                 </Typography>
                 <Typography size="md">32</Typography>
               </Grid>
               <Grid item>
                 <Typography color="text" colorBrightness="secondary">
-                  Rate
+                  Errores
                 </Typography>
                 <Typography size="md">3.25%</Typography>
               </Grid>
@@ -114,7 +114,7 @@ export default function Dashboard(props) {
         </Grid>
         <Grid item lg={3} md={8} sm={6} xs={12}>
           <Widget
-            title="App Performance"
+            title="Registros"
             upperTitle
             className={classes.card}
             bodyClass={classes.fullHeightBody}
@@ -127,7 +127,7 @@ export default function Dashboard(props) {
                   colorBrightness="secondary"
                   className={classes.legendElementText}
                 >
-                  Integration
+                  Escrituras
                 </Typography>
               </div>
               <div className={classes.legendElement}>
@@ -137,7 +137,7 @@ export default function Dashboard(props) {
                   colorBrightness="secondary"
                   className={classes.legendElementText}
                 >
-                  SDK
+                  Lecturas
                 </Typography>
               </div>
             </div>
@@ -148,7 +148,7 @@ export default function Dashboard(props) {
                 colorBrightness="secondary"
                 className={classes.progressSectionTitle}
               >
-                Integration
+                Escrituras
               </Typography>
               <LinearProgress
                 variant="determinate"
@@ -164,7 +164,7 @@ export default function Dashboard(props) {
                 colorBrightness="secondary"
                 className={classes.progressSectionTitle}
               >
-                SDK
+                Lecturas
               </Typography>
               <LinearProgress
                 variant="determinate"
@@ -177,7 +177,7 @@ export default function Dashboard(props) {
         </Grid>
         <Grid item lg={3} md={8} sm={6} xs={12}>
           <Widget
-            title="Server Overview"
+            title="Dispositivos"
             upperTitle
             className={classes.card}
             bodyClass={classes.fullHeightBody}
@@ -188,7 +188,7 @@ export default function Dashboard(props) {
                 colorBrightness="secondary"
                 className={classes.serverOverviewElementText}
               >
-                60% / 37°С / 3.3 Ghz
+                80% / 37°С 
               </Typography>
               <div className={classes.serverOverviewElementChartWrapper}>
                 <ResponsiveContainer height={50} width="99%">
@@ -211,7 +211,7 @@ export default function Dashboard(props) {
                 colorBrightness="secondary"
                 className={classes.serverOverviewElementText}
               >
-                54% / 31°С / 3.3 Ghz
+                54% / 31°С 
               </Typography>
               <div className={classes.serverOverviewElementChartWrapper}>
                 <ResponsiveContainer height={50} width="99%">
@@ -234,7 +234,7 @@ export default function Dashboard(props) {
                 colorBrightness="secondary"
                 className={classes.serverOverviewElementText}
               >
-                57% / 21°С / 3.3 Ghz
+                57% / 21°С 
               </Typography>
               <div className={classes.serverOverviewElementChartWrapper}>
                 <ResponsiveContainer height={50} width="99%">
@@ -254,7 +254,7 @@ export default function Dashboard(props) {
           </Widget>
         </Grid>
         <Grid item lg={3} md={4} sm={6} xs={12}>
-          <Widget title="Revenue Breakdown" upperTitle className={classes.card}>
+          <Widget title="Request por Empresa" upperTitle className={classes.card}>
             <Grid container spacing={2}>
               <Grid item xs={6}>
                 <ResponsiveContainer width="100%" height={144}>

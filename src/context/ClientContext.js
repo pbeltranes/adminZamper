@@ -1,13 +1,12 @@
 import React from "react";
-import axios from "axios";
-import { clients as clientsDefault } from "../databases/clients";
+import Axios from "../axios";
 
 var ClientStateContext = React.createContext();
 var ClientDispatchContext = React.createContext();
 
 const initialState = {
-  clients: null,
-  error: null,
+  clients: [],
+  error: [],
 };
 
 function userReducer(state = initialState, action) {
@@ -15,26 +14,48 @@ function userReducer(state = initialState, action) {
     case "GET_CLIENTS_SUCCESS":
       return {
         ...state,
-        error: null,
         clients: action.clients,
       };
     case "GET_CLIENTS_FAILURE":
       return {
         ...state,
-        error: null,
-        clients: action.clients,
+        error: action.error,
       };
     case "CREATE_CLIENT_SUCCESS":
       return {
-        ...state,
-        error: null,
-        client: action.clients,
+        clients: [...state.clients, action.newClient],
       };
     case "CREATE_CLIENT_FAILURE":
       return {
         ...state,
-        error: null,
         clients: action.clients,
+      };
+    case "UPDATE_CLIENT_SUCCESS":
+      return {
+        clients: state.clients.map(client => {
+          if (client.id !== action.updateClient.id) {
+            return client;
+          }
+          return {
+            ...action.updateClient,
+          };
+        }),
+      };
+    case "UPDATE_CLIENT_FAILURE":
+    return {
+      clients: [...state.clients],
+      error: action.error,
+    }
+    case "DELETE_CLIENT_FAILURE":
+      return {
+        clients: [...state.clients],
+        error: action.error,
+      };
+    case "DELETE_CLIENT_SUCCESS":
+      return {
+        clients: state.clients.filter(
+          client => client.id !== action.deleteClient.id,
+        ),
       };
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
@@ -46,6 +67,7 @@ function ClientProvider({ children }) {
   // Metodo que proveera el state, el disparados y los argumentos de accion, setea las forma de actuar el disparador
   var [state, dispatch] = React.useReducer(userReducer, {
     clients: children.clients,
+    error: children.error,
   });
 
   return (
@@ -81,47 +103,93 @@ export {
   useClientDispatch,
   getClients,
   createClient,
+  updateClient,
+  deleteClient,
 };
 
 // ###########################################################
 
-async function getClients(dispatch, history, setIsLoading, setError) {
+function getClients(dispatch, history, setIsLoading, setError) {
   setError(false);
   setIsLoading(true);
   //const response = await axios.post('matrix_local/create_local', {login, password})
-  const response = await axios.get(
-    "https://jsonplaceholder.typicode.com/users",
-  );
-  console.log(response);
-  const clients = response.data;
-  try {
-    setTimeout(() => {
-      dispatch({ type: "GET_CLIENTS_SUCCESS", clients: clients });
+  Axios.get("/api/usuarioapi")
+    .then(clients => {
+      dispatch({ type: "GET_CLIENTS_SUCCESS", clients: clients.data });
       setError(false);
       setIsLoading(false);
-    }, process.env.defaultTTL || 2000);
-  } catch (e) {
-    dispatch({ type: "GET_CLIENTS_FAILURE" });
-    setError(true);
-    setIsLoading(false);
-  }
+    })
+    .catch(e => {
+      dispatch({ type: "GET_CLIENTS_FAILURE" });
+      setError(true);
+      setIsLoading(false);
+    });
 }
 
-async function createClient(dispatch, client, history, setIsLoading, setError) {
+async function createClient(dispatch, form, history, setIsLoading, setError) {
   setError(false);
   setIsLoading(true);
-  //const response = await axios.post()
-  setTimeout(() => {
-    dispatch({ type: "CREATE_CLIENT_SUCCESS", client: client });
-    setError(false);
-    setIsLoading(false);
-  }, process.env.defaultTTL || 2000);
+  console.log("el form", form);
+  await Axios.post("/api/usuarioapi", {
+    name_usuario: form.name_usuario,
+    id_comp: form.id_comp,
+    invoice_email: form.invoice_phone,
+    invoice_phone: form.invoice_email,
+    keys_json: form.tokenKey,
+    estado_api: true,
+  })
+    .then(client => {
+      dispatch({ type: "CREATE_CLIENT_SUCCESS", newClient: client.data });
+      setError(false);
+      setIsLoading(false);
+      return "success";
+    })
+    .catch(error => {
+      dispatch({ type: "CREATE_CLIENT_FAILURE", error: error });
+      setError(true);
+      setIsLoading(false);
+      return error;
+    });
 }
-async function setClient(
-  dispatch,
-  login,
-  password,
-  history,
-  setIsLoading,
-  setError,
-) {}
+async function updateClient(dispatch, form, history, setIsLoading, setError) {
+  setError(false);
+  setIsLoading(true);
+  console.log("el form", form);
+  await Axios.put("/api/usuarioapi/" + form.id, {
+    name_usuario: form.name_usuario,
+    id_comp: form.id_comp,
+    invoice_email: form.invoice_phone,
+    invoice_phone: form.invoice_email,
+    keys_json: form.tokenKey,
+    estado_api: true,
+  })
+    .then(client => {
+      dispatch({ type: "UPDATE_CLIENT_SUCCESS", updateClient: client.data });
+      setError(false);
+      setIsLoading(false);
+      return "success";
+    })
+    .catch(error => {
+      dispatch({ type: "UPDATE_CLIENT_FAILURE", error: error });
+      setError(true);
+      setIsLoading(false);
+      return error;
+    });
+}
+async function deleteClient(dispatch, form, history, setIsLoading, setError) {
+  setError(false);
+  setIsLoading(true);
+  await Axios.delete("/api/usuarioapi/" + form.id)
+    .then(client => {
+      dispatch({ type: "DELETE_CLIENT_SUCCESS", deleteClient: client.data });
+      setError(false);
+      setIsLoading(false);
+      return "success";
+    })
+    .catch(error => {
+      dispatch({ type: "DELETE_CLIENT_FAILURE", error: error });
+      setError(true);
+      setIsLoading(false);
+      return error;
+    });
+}

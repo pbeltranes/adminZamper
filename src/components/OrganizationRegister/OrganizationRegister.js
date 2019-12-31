@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
   Button,
@@ -15,10 +15,6 @@ import {
   DialogContentText,
   DialogActions,
   Grid,
-  Select,
-  FormControl,
-  MenuItem,
-  InputLabel,
 } from "@material-ui/core";
 import { Add as AddIcon, Person as PersonIcon } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
@@ -26,15 +22,10 @@ import Typography from "@material-ui/core/Typography";
 // styles
 import useStyles from "./styles";
 
-import { createClient, useClientDispatch } from "../../context/ClientContext";
-import {
-  getOrganizations,
-  useOrganizationState,
-  useOrganizationDispatch,
-} from "../../context/OrganizationContext";
+import { createOrganization, useOrganizationDispatch } from "../../context/OrganizationContext";
+
 function SimpleDialog(props) {
-  var Dispatch = useClientDispatch();
-  var organizationDispatch = useOrganizationDispatch();
+  var Dispatch = useOrganizationDispatch();
   const classes = useStyles();
   const { onClose, selectedValue, open } = props;
 
@@ -44,11 +35,10 @@ function SimpleDialog(props) {
     onClose(selectedValue);
   };
 
-  var { organizations } = useOrganizationState();
   const [form, setValues] = useState({
     firstName: "",
     lastName: "",
-    organization: "",
+    email: "",
     apiKey: "",
     secretKey: "",
     phone: "",
@@ -59,55 +49,17 @@ function SimpleDialog(props) {
   );
   const handleChange = e => {
     e.preventDefault();
-    const { name, value } = e.target;
-    setValues({ ...form, [name]: value });
+    const {name, value} = e.target
+    setValues({...form, [name]: value})
   };
 
   const saveForm = () => {
-    const { firstName, email, phone } = form;
-    if (!firstName || !email || !phone) return;
-    createClient(Dispatch, form, "/clients", setIsLoading, setError);
+    const {firstName, email, phone} = form
+    if(!firstName || !email || !phone) return
+    createOrganization(Dispatch, form, "/organizations", setIsLoading, setError);
     handleClose();
-  };
+  }
 
-  const [openOrg, setOpenOrg] = React.useState(false);
-
-  const handleCloseOrg = () => {
-    setOpenOrg(false);
-  };
-
-  const handleOpenOrg = () => {
-    setOpenOrg(true);
-  };
-  const Organizations =
-   (typeof organizations !== "undefined" ) ? (
-        organizations.map((organization, id) => (
-          <MenuItem value={organization.id} >{organization.name}</MenuItem>
-        ))
-    ) : (
-      ""
-    );
-  useEffect(() => {
-    async function fetchData() {
-      // You can await here
-      if (typeof organizations === "undefined") {
-        await getOrganizations(
-          organizationDispatch,
-          props.history,
-          setIsLoading,
-          setError,
-        );
-      }
-    }
-    fetchData();
-  }, [
-    "id",
-    "id_comp",
-    "name_usuario",
-    "invoice_phone",
-    "invoice_email",
-    "tokenKey",
-  ]); // [] define que si una variable cambia, debería ejecutarse el useEffect
   return (
     <Dialog
       open={open}
@@ -138,28 +90,18 @@ function SimpleDialog(props) {
             value={form.firstName}
             onChange={handleChange}
           />
-
-          <FormControl className={classes.formControl}>
-            <InputLabel id="demo-controlled-open-select-label">
-              Organización
-            </InputLabel>
-            <Select
-              name="organization"
-              labelId="demo-controlled-open-select-label"
-              id="demo-controlled-open-select"
-              open={openOrg}
-              onClose={handleCloseOrg}
-              onOpen={handleOpenOrg}
-              value={form.organizacion}
-              onChange={handleChange}
-            >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              {Organizations}
-            </Select>
-          </FormControl>
-
+          <TextField
+            //error={form.errors.lastName.length === 0 ? false : true}
+            autoFocus
+            margin="normal"
+            name="lastName"
+            label="Apellido"
+            type="text"
+            required
+            //helperText={form.errors.lastName}
+            value={form.lastName}
+            onChange={handleChange}
+          />
           <TextField
             //error={form.errors.email.length === 0 ? false : true}
             autoFocus
@@ -230,7 +172,7 @@ SimpleDialog.propTypes = {
   selectedValue: PropTypes.string.isRequired,
 };
 
-export default function ClientRegister() {
+export default function OrganizationRegister() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [selectedValue, setSelectedValue] = React.useState(true);

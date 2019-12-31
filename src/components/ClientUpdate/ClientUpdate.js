@@ -20,11 +20,11 @@ import {
   MenuItem,
   InputLabel,
 } from "@material-ui/core";
-import { Add as AddIcon, Person as PersonIcon } from "@material-ui/icons";
+import { Add as AddIcon, Person as PersonIcon, Edit} from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 // styles
-import useStyles from "./styles";
+import useStyles from "../ClientRegister/styles";
 
 import { createClient, useClientDispatch } from "../../context/ClientContext";
 import {
@@ -46,7 +46,7 @@ function SimpleDialog(props) {
 
   var { organizations } = useOrganizationState();
   const [form, setValues] = useState({
-    firstName: "",
+    firstName: props.name_usuario,
     lastName: "",
     organization: "",
     apiKey: "",
@@ -230,7 +230,7 @@ SimpleDialog.propTypes = {
   selectedValue: PropTypes.string.isRequired,
 };
 
-export default function ClientRegister() {
+export default function ClientUpdate(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [selectedValue, setSelectedValue] = React.useState(true);
@@ -246,15 +246,10 @@ export default function ClientRegister() {
 
   return (
     <>
-      <Fab
-        color="primary"
-        aria-label="add"
-        className={classes.fab}
-        onClick={handleClickOpen}
-      >
-        <AddIcon />
-      </Fab>
-      <SimpleDialog
+  
+        <Edit onClick={handleClickOpen} />
+      <SimpleDialog 
+        props =  {props}
         selectedValue={selectedValue}
         open={open}
         onClose={handleClose}
